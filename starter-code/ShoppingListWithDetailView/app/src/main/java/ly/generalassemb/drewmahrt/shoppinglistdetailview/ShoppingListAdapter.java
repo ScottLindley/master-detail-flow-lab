@@ -1,8 +1,7 @@
 package ly.generalassemb.drewmahrt.shoppinglistdetailview;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,15 @@ import java.util.List;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingItemViewHolder> {
     private List<ShoppingItem> mShoppingItems;
+    private OnItemSelectedListener mListener;
 
-    public ShoppingListAdapter(List<ShoppingItem> shoppingItems) {
+    public ShoppingListAdapter(List<ShoppingItem> shoppingItems, OnItemSelectedListener listener) {
         mShoppingItems = shoppingItems;
+        mListener = listener;
+    }
+
+    public interface OnItemSelectedListener{
+        void onItemSelected(int itemID);
     }
 
     @Override
@@ -36,17 +41,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingItemViewHo
         holder.mNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Get a reference to the MainActivity as a Context
-                Context mainActivity = holder.mNameTextView.getContext();
-
-                // Create the intent
-                Intent intent = new Intent(mainActivity, DetailActivity.class);
-
-                // Add the ID as an extra
-                intent.putExtra(DetailActivity.ITEM_ID_KEY, currentItem.getId());
-
-                // Start the detail activity
-                mainActivity.startActivity(intent);
+                Log.d("TAG", "Recycler view sending info for the activity to handle");
+                mListener.onItemSelected(mShoppingItems.get(holder.getAdapterPosition()).getId());
             }
         });
     }
